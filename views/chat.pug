@@ -12,7 +12,7 @@ block content
 	script.
 		var peer = $("#peer").val().trim();
 
-		function getLog() {
+		function getLog(once) {
 			$.get("/log/" + peer, function(res) {
 				var log = JSON.parse(res);
 
@@ -22,8 +22,12 @@ block content
 
 				$(".chat").scrollTop($(".chat")[0].scrollHeight);
 
-				setTimeout(getLog, 1000);
-			});
+
+			}).always(function() {
+				if(!once) {
+					setTimeout(getLog, 1000);
+				}
+			})
 		}
 
 		getLog();
@@ -34,6 +38,8 @@ block content
 					type: "POST",
 					url: "/send/" + peer,
 					data: { message: $("#message").val() }
+				}).done(function() {
+					getLog(true);
 				});
 
 				$("#message").val("");
