@@ -17,7 +17,7 @@ block content
 				var log = JSON.parse(res);
 
 				$(".chat").html(log.map(function(message) {
-					return message.username + ": " + message.text;
+					return message.username + ": " + $("<div>").text(message.text).html();;
 				}).join("<br>"));
 
 				$(".chat").scrollTop($(".chat")[0].scrollHeight);
