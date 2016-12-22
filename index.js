@@ -3,7 +3,11 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const RedisStore = require("connect-redis")(session);
 const bcrypt = require("bcrypt");
+const NodeRSA = require("node-rsa");
 const db = require("./lib/db");
+
+const serverKey = new NodeRSA({ b: 2048 });
+const publicKey = serverKey.exportKey("pkcs8-public-pem");
 
 const app = express();
 
@@ -12,14 +16,20 @@ app.set("views", __dirname + "/views");
 
 app.use(express.static(__dirname + "/static"));
 
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(session({
 	store: new RedisStore({ client: db }),
-	secret: "keyboard cat"
+	secret: "keyboard cat",
+	saveUninitialized: false,
+	resave: true
 }));
 
+app.use((req, res, next) => {
+	res.locals.publicKey = publicKey;
 
+	next();
+});
 
 app.post("/", (req, res, next) => {
 	Promise.resolve().then(() => {
@@ -49,7 +59,7 @@ app.post("/", (req, res, next) => {
 			})
 			.then(() => {
 				req.session.username = username;
-			})
+			});
 		} else if(req.body.login) {
 			return db.getAsync("user:" + req.body.username)
 			.then(JSON.parse)
@@ -62,7 +72,7 @@ app.post("/", (req, res, next) => {
 
 					req.session.username = username;
 				});
-			})
+			});
 		}
 	})
 	.then(() => {
@@ -99,7 +109,7 @@ app.get("/chat/:peer", (req, res) => {
 	res.render("chat");
 });
 
-app.get("/log/:peer", (req, res) => {
+app.post("/log/:peer", (req, res) => {
 	if(!req.session.username) return;
 
 	const key = "chat:" + [
@@ -107,9 +117,11 @@ app.get("/log/:peer", (req, res) => {
 		req.params.peer
 	].sort().join(":");
 
-	db.lrangeAsync(key, 0, -1)
+	db.lrangeAsync(key, 0, 20)
 	.then(messages => {
-		res.end(JSON.stringify(messages.reverse().map(JSON.parse)));
+		const data = JSON.stringify(messages.reverse().map(JSON.parse));
+		const clientKey = new NodeRSA(req.body.publicKey);
+		res.end(clientKey.encrypt(data, "base64"));
 	});
 });
 
@@ -123,10 +135,8 @@ app.post("/send/:peer", (req, res) => {
 
 	const value = JSON.stringify({
 		username: req.session.username,
-		text: req.body.message
+		text: serverKey.decrypt(req.body.message, "utf8")
 	});
-
-	console.log(key, value);
 
 	db.lpushAsync(key, value)
 	.then(() => {

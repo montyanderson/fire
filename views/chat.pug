@@ -2,6 +2,7 @@ extends layout
 
 block content
 	input(type="hidden" id="peer" value=peer)
+	input(type="hidden" id="publicKey" value=publicKey)
 
 	h2=peer
 
@@ -10,41 +11,4 @@ block content
 	br
 	input#message
 
-	script.
-		var peer = $("#peer").val().trim();
-
-		function getLog(once) {
-			$.get("/log/" + peer, function(res) {
-				var log = JSON.parse(res);
-
-				$(".chat").html(log.map(function(message) {
-					return message.username + ": " + $("<div>").text(message.text).html();;
-				}).join("<br>"));
-
-				$(".chat").scrollTop($(".chat")[0].scrollHeight);
-
-
-			}).always(function() {
-				if(!once) {
-					setTimeout(getLog, 1000);
-				}
-			})
-		}
-
-		getLog();
-
-		$("#message").keypress(function(event) {
-			if(event.which == 13) {
-				$.ajax({
-					type: "POST",
-					url: "/send/" + peer,
-					data: { message: $("#message").val() }
-				}).done(function() {
-					getLog(true);
-				});
-
-				$("#message").val("");
-			}
-
-
-		});
+	script(src="/chat.js")
