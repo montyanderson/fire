@@ -87,7 +87,7 @@ app.get("/dash", (req, res) => {
 
 	db.keysAsync("user:*")
 	.then(users => {
-		res.locals.users = users.map(u => u.replace("user:", ""));
+		res.locals.users = users.map(u => u.replace("user:", "")).sort();
 	})
 	.then(() => res.render("dash"));
 });
