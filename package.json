@@ -1,0 +1,22 @@
+{
+  "name": "fire",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Monty Anderson <monty.linux@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^1.0.1",
+    "bluebird": "^3.4.6",
+    "body-parser": "^1.15.2",
+    "connect-redis": "^3.1.0",
+    "express": "^4.14.0",
+    "express-session": "^1.14.2",
+    "p-redis": "0.0.1",
+    "pug": "^2.0.0-beta6",
+    "redis": "^2.6.3"
+  }
+}

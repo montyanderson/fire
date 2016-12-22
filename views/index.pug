@@ -1,0 +1,9 @@
+extends layout
+
+block content
+	form(method="post")
+		p=formError
+		input(name="username")
+		input(name="password" type="password")
+		input(type="submit" name="login" value="Login")
+		input(type="submit" name="signup" value="Signup")

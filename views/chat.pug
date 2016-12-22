@@ -1,0 +1,36 @@
+extends layout
+
+block content
+	input(type="hidden" id="peer" value=peer)
+
+	h1=peer
+
+	div.chat
+	input#message
+
+	script.
+		var peer = $("#peer").val().trim();
+
+		function getLog() {
+			$.get("/log/" + peer, function(res) {
+				var log = JSON.parse(res);
+
+				$(".chat").html(log.map(function(message) {
+					return message.username + ": " + message.text;
+				}).join("<br>"));
+
+				setTimeout(getLog, 1000);
+			});
+		}
+
+		getLog();
+
+		$("#message").keypress(function(event) {
+			if(event.which == 13) {
+				$.ajax({
+					type: "POST",
+					url: "/send/" + peer,
+					data: { message: $("#message").val() }
+				});
+			}
+		});

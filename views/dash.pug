@@ -1,0 +1,9 @@
+extend layout
+
+block content
+	p Users to chat to
+	
+	ul
+		each user in users
+			li
+				a(href="/chat/" + user)=user
