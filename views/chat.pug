@@ -35,7 +35,9 @@ block content
 					url: "/send/" + peer,
 					data: { message: $("#message").val() }
 				});
+
+				$("#message").val("");
 			}
 
-			$("#message").val("");
+
 		});
