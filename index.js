@@ -19,6 +19,8 @@ app.use(session({
 	secret: "keyboard cat"
 }));
 
+
+
 app.post("/", (req, res, next) => {
 	Promise.resolve().then(() => {
 		const { username, password } = req.body;
@@ -73,6 +75,10 @@ app.post("/", (req, res, next) => {
 });
 
 app.all("/", (req, res) => {
+	if(req.session.username) {
+		return res.redirect("/dash");
+	}
+
 	res.render("index");
 });
 
