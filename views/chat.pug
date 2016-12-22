@@ -6,6 +6,7 @@ block content
 	h1=peer
 
 	div.chat
+	br
 	input#message
 
 	script.
@@ -18,6 +19,8 @@ block content
 				$(".chat").html(log.map(function(message) {
 					return message.username + ": " + message.text;
 				}).join("<br>"));
+
+				$(".chat").scrollTop($(".chat")[0].scrollHeight);
 
 				setTimeout(getLog, 1000);
 			});

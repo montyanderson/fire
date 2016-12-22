@@ -1,0 +1,16 @@
+.chat {
+	text-align: left;
+	background-color: #ddd;
+	border-radius: 0.3em;
+
+	display: inline-block;
+
+	margin-top: 2em;
+	padding: 1em;
+
+	width: 50em;
+	height: 30em;
+
+	overflow-x: auto;
+	overflow-y: scroll;
+}

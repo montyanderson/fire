@@ -10,6 +10,8 @@ const app = express();
 app.set("view engine", "pug");
 app.set("views", __dirname + "/views");
 
+app.use(express.static(__dirname + "/static"));
+
 app.use(bodyParser.urlencoded());
 
 app.use(session({
@@ -126,4 +128,4 @@ app.post("/send/:peer", (req, res) => {
 	});
 });
 
-app.listen(8080);
+app.listen(8000);
