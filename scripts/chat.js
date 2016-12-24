@@ -25,7 +25,7 @@ Promise.resolve()
 
 			$(".chat")
 			.html(
-				log.map(m => m.username + ": " + $("<div>").text(m.text).html())
+				log.map(m => $("<div>").text(m.username).html() + ": " + $("<div>").text(m.text).html())
 				.join("<br>")
 			);
 

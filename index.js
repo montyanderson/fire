@@ -35,12 +35,30 @@ app.post("/", (req, res, next) => {
 	Promise.resolve().then(() => {
 		const { username, password } = req.body;
 
+		username = username.trim().toLowerCase();
+
 		if(!username || !password) {
 			throw new Error("Please specify a username and password!");
 		}
 
 		if(!username.match(/^[a-z0-9]+$/i)) {
 			throw new Error("Username must be alphanumeric!");
+		}
+
+		if(username.length < 2) {
+			throw new Error("Username must be 2 characters or more!");
+		}
+
+		if(username.length > 12) {
+			throw new Error("Username must be 12 characters or less!");
+		}
+
+		if(password.length < 5) {
+			throw new Error("Password must be 5 characters or more!");
+		}
+
+		if(password.length > 20) {
+			throw new Error("Password must be 20 characters or less!");
 		}
 
 		if(req.body.signup) {
