@@ -9,7 +9,7 @@ Promise.resolve()
 .then(() => {
 	return new Promise(resolve => {
 		setTimeout(() => {
-			resolve(new NodeRSA({ b: 1024 }));
+			resolve(new NodeRSA({ b: 1536 }));
 		}, 0);
 	});
 })
@@ -21,17 +21,17 @@ Promise.resolve()
 
 	function getLog(once) {
 		$.post("/log/" + peer, { publicKey }, (res) => {
-			const log = JSON.parse(key.decrypt(res, "utf8"));
+			setTimeout(() => {
+				const log = JSON.parse(key.decrypt(res, "utf8"));
 
-			$(".chat")
-			.html(
-				log.map(m => $("<div>").text(m.username).html() + ": " + $("<div>").text(m.text).html())
-				.join("<br>")
-			);
+				$(".chat")
+				.html(
+					log.map(m => $("<div>").text(m.username).html() + ": " + $("<div>").text(m.text).html())
+					.join("<br>")
+				);
 
-			$(".chat").scrollTop($(".chat")[0].scrollHeight);
-
-
+				$(".chat").scrollTop($(".chat")[0].scrollHeight);
+			}, 0);
 		}).always(() => {
 			if(!once) {
 				setTimeout(getLog, 1000);

@@ -33,7 +33,7 @@ app.use((req, res, next) => {
 
 app.post("/", (req, res, next) => {
 	Promise.resolve().then(() => {
-		const { username, password } = req.body;
+		let { username, password } = req.body;
 
 		username = username.trim().toLowerCase();
 
