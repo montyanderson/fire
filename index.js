@@ -73,13 +73,13 @@ app.post("/", (req, res, next) => {
 			.then(password => {
 				const userObj = { username, password }; /* password is now hashed */
 
-				return db.setAsync("user:" + req.body.username, JSON.stringify(userObj));
+				return db.setAsync("user:" + username, JSON.stringify(userObj));
 			})
 			.then(() => {
 				req.session.username = username;
 			});
 		} else if(req.body.login) {
-			return db.getAsync("user:" + req.body.username)
+			return db.getAsync("user:" + username)
 			.then(JSON.parse)
 			.then(user => {
 				return bcrypt.compare(password, user.password)
