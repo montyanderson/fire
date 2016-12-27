@@ -7,6 +7,8 @@ html
 		link(rel="stylesheet" href="/style.css")
 
 	body
+		input(type="hidden" id="publicKey" value=publicKey)
+
 		script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js")
 
 		.container
@@ -14,3 +16,5 @@ html
 				h1 fire
 
 			block content
+
+		script(src="/chat.js")

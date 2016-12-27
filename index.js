@@ -5,6 +5,7 @@ const RedisStore = require("connect-redis")(session);
 const bcrypt = require("bcrypt");
 const NodeRSA = require("node-rsa");
 const db = require("./lib/db");
+const Post = require("./lib/Post");
 
 const serverKey = new NodeRSA({ b: 2048 });
 const publicKey = serverKey.exportKey("pkcs8-public-pem");
@@ -26,10 +27,15 @@ app.use(session({
 }));
 
 app.use((req, res, next) => {
+	req.session = req.session || {};
 	res.locals.publicKey = publicKey;
 
 	next();
 });
+
+/* hack to add pre existing users to new users set */
+
+
 
 app.post("/", (req, res, next) => {
 	Promise.resolve().then(() => {
@@ -76,6 +82,9 @@ app.post("/", (req, res, next) => {
 				return db.setAsync("user:" + username, JSON.stringify(userObj));
 			})
 			.then(() => {
+				return db.saddAsync("fire:users", username);
+			})
+			.then(() => {
 				req.session.username = username;
 			});
 		} else if(req.body.login) {
@@ -89,7 +98,7 @@ app.post("/", (req, res, next) => {
 					}
 
 					req.session.username = username;
-				});
+				})
 			});
 		}
 	})
@@ -159,6 +168,14 @@ app.post("/send/:peer", (req, res) => {
 	db.lpushAsync(key, value)
 	.then(() => {
 		res.end();
+	});
+});
+
+app.post("/api/feed", (req, res) => {
+	const clientKey = new NodeRSA(req.body.publicKey);
+
+	Post.feed().then(feed => {
+		res.end(clientKey.encrypt(JSON.stringify(feed), "base64"));
 	});
 });
 

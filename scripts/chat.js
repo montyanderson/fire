@@ -1,57 +1,36 @@
-const NodeRSA = require("node-rsa");
-const Promise = window.Promise = require("bluebird");
+const cryptoPost = require("./cryptoPost");
+const peer = $("#peer").val().trim();
 
-const serverKey = new NodeRSA($("#publicKey").val());
+function getLog(once) {
+	cryptoPost("/log/" + peer)
+	.then(log => {
+		$(".chat")
+		.html(
+			log.map(m => $("<div>").text(m.username).html() + ": " + $("<div>").text(m.text).html())
+			.join("<br>")
+		);
 
-console.log($("#publicKey").val());
+		$(".chat").scrollTop($(".chat")[0].scrollHeight);
 
-Promise.resolve()
-.then(() => {
-	return new Promise(resolve => {
-		setTimeout(() => {
-			resolve(new NodeRSA({ b: 1536 }));
-		}, 0);
-	});
-})
-.then(key => {
-	const publicKey = key.exportKey("pkcs8-public-pem");
-	console.log(publicKey);
-
-	const peer = $("#peer").val().trim();
-
-	function getLog(once) {
-		$.post("/log/" + peer, { publicKey }, (res) => {
-			setTimeout(() => {
-				const log = JSON.parse(key.decrypt(res, "utf8"));
-
-				$(".chat")
-				.html(
-					log.map(m => $("<div>").text(m.username).html() + ": " + $("<div>").text(m.text).html())
-					.join("<br>")
-				);
-
-				$(".chat").scrollTop($(".chat")[0].scrollHeight);
-			}, 0);
-		}).always(() => {
-			if(!once) {
-				setTimeout(getLog, 1000);
-			}
-		});
-	}
-
-	getLog();
-
-	$("#message").keypress(event => {
-		if(event.which == 13) {
-			$.ajax({
-				type: "POST",
-				url: "/send/" + peer,
-				data: { message: serverKey.encrypt($("#message").val(), "base64") }
-			}).done(() => {
-				getLog(true);
-			});
-
-			$("#message").val("");
+		if(!once) {
+			setTimeout(getLog, 1000);
+		}
+	}).catch(() => {
+		if(!once) {
+			setTimeout(getLog, 1000);
 		}
 	});
+}
+
+getLog();
+
+$("#message").keypress(event => {
+	if(event.which == 13) {
+		cryptoPost("/send/" + peer, { message: $("#message").val() }, false)
+		.then(() => {
+			getLog(true);
+		});
+
+		$("#message").val("");
+	};
 });

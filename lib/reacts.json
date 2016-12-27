@@ -1,0 +1,27 @@
+[
+	{
+		"name": "Love",
+		"id": 1,
+		"symbol": "😍"
+	},
+	{
+		"name": "Haha",
+		"id": 2,
+		"symbol": "😆"
+	},
+	{
+		"name": "Wow",
+		"id": 3,
+		"symbol": "😮"
+	},
+	{
+		"name": "Sad",
+		"id": 4,
+		"symbol": "😭"
+	},
+	{
+		"name": "Angery",
+		"id": 5,
+		"symbol": "😠"
+	}
+]

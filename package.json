@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublish": "browserify scripts/chat.js -o static/chat.js -t [ babelify --presets [ es2015 ] ]",
-	"dev": "watchify scripts/chat.js -o static/chat.js -t [ babelify --presets [ es2015 ] ]"
+    "prepublish": "browserify scripts/index.js -o static/chat.js -t [ babelify --presets [ es2015 ] ]",
+    "dev": "watchify scripts/index.js -o static/chat.js -t [ babelify --presets [ es2015 ] ]"
   },
   "author": "Monty Anderson <monty.linux@gmail.com>",
   "license": "MIT",
@@ -20,6 +20,7 @@
     "connect-redis": "^3.1.0",
     "express": "^4.14.0",
     "express-session": "^1.14.2",
+    "mustache": "^2.3.0",
     "node-rsa": "^0.4.2",
     "p-redis": "0.0.1",
     "pug": "^2.0.0-beta6",
