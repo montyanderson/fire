@@ -23,5 +23,11 @@
 		"name": "Angery",
 		"id": 5,
 		"symbol": "😠"
+	},
+	{
+		"name": "Dislike",
+		"id": 6,
+		"symbol": "👎",
+		"credit": "Phil Martin"
 	}
 ]
