@@ -13,3 +13,7 @@
 	overflow-x: auto;
 	overflow-y: scroll;
 }
+
+.reactsCommon > img {
+	//width: 20px !important;
+}

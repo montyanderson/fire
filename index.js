@@ -7,7 +7,7 @@ const NodeRSA = require("node-rsa");
 const db = require("./lib/db");
 const Post = require("./lib/Post");
 
-const serverKey = new NodeRSA({ b: 2048 });
+const serverKey = require("./lib/serverKey");
 const publicKey = serverKey.exportKey("pkcs8-public-pem");
 
 const app = express();
@@ -177,6 +177,28 @@ app.post("/api/feed", (req, res) => {
 	Post.feed().then(feed => {
 		res.end(clientKey.encrypt(JSON.stringify(feed), "base64"));
 	});
+});
+
+app.post("/api/react", (req, res) => {
+	const clientKey = new NodeRSA(req.body.publicKey);
+	console.log(req.body);
+	const react = serverKey.decrypt(req.body.react, "utf8");
+	const post = serverKey.decrypt(req.body.post, "utf8");
+
+	Post.react(post, req.session.username, +react)
+		.then(a => res.end())
+		.catch(a => res.end());
+});
+
+app.post("/api/post", (req, res) => {
+	const clientKey = new NodeRSA(req.body.publicKey);
+
+	const username = req.session.username;
+	const text = serverKey.decrypt(req.body.text, "utf8");
+
+	Post.create(username, text)
+	.then(post => post.save())
+	.then(() => res.end());
 });
 
 app.listen(8000);
