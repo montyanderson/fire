@@ -81,3 +81,5 @@ $("#text").keypress(event => {
 		cryptoPost("/api/post", { text: t }, false).then(renderFeed);
 	}
 });
+
+setInterval(renderFeed, 60000);
