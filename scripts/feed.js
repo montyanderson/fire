@@ -77,7 +77,7 @@ $("#text").keypress(event => {
 	const t = $("#text").val();
 
 	if(event.which == 13) {
-		$(this).val("");
+		$("#text").val("");
 		cryptoPost("/api/post", { text: t }, false).then(renderFeed);
 	}
 });
